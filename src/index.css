@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#001f19] text-slate-100 font-sans antialiased selection:bg-emerald-500/30 selection:text-emerald-200;
+  }
+}
+
+/* RMK Theme Colors */
+:root {
+  --rmk-green: #009677;
+  --rmk-green-dark: #005c4c;
+  --rmk-green-deep: #002822;
+}
+
+/* Glassmorphism custom classes */
+.glass-panel {
+  background: rgba(0, 40, 34, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-card {
+  background: rgba(0, 40, 34, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.rmk-translucent-card {
+  background: rgba(0, 40, 34, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rmk-translucent-card:hover {
+  background: rgba(0, 92, 76, 0.75);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 36px -10px rgba(0, 150, 119, 0.4);
+  transform: translateY(-3px);
+}
+
+.rmk-translucent-card:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
+/* Glow effects */
+.glow-rmk {
+  box-shadow: 0 0 25px -5px rgba(0, 150, 119, 0.5);
+}
+
+/* Custom Scrollbar for Touch Kiosk */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 30, 25, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 150, 119, 0.6);
+}
+
+/* Kiosk Touch Active States */
+.kiosk-btn {
+  @apply relative overflow-hidden transition-all duration-150 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-emerald-500/50;
+}
+
+/* Radar pulse animation for map markers */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.radar-ring {
+  animation: radar-pulse 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+/* Smooth Photo Carousel Crossfade */
+.bg-carousel-image {
+  transition: opacity 1.2s ease-in-out;
+}
