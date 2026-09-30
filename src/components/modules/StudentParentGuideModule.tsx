@@ -6,7 +6,7 @@ export const StudentParentGuideModule: React.FC = () => {
         <div className="space-y-6 select-none">
             <div className="glass-panel border border-slate-700/80 rounded-3xl p-6">
                 <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                    <BookOpen className="w-6 h-6 text-sky-400" />
+                    <BookOpen className="w-6 h-6 text-emerald-300" />
                     <span>Student & Parent Information Guide</span>
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">Key offices, principal cell, accounts, exam branch, and counseling services</p>
@@ -15,20 +15,20 @@ export const StudentParentGuideModule: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="glass-panel border border-slate-700/80 rounded-3xl p-6 space-y-3">
                     <h4 className="text-base font-bold text-white flex items-center gap-2">
-                        <Building className="w-5 h-5 text-sky-400" />
+                        <Building className="w-5 h-5 text-emerald-300" />
                         <span>Administrative Offices & Help Desks</span>
                     </h4>
                     <div className="p-3 bg-slate-900/80 rounded-2xl border border-slate-800 text-xs text-slate-300">
                         <h5 className="font-bold text-white">Principal / Director Office</h5>
-                        <p>Administrative Tower, 4th Floor • Hours: 9:30 AM - 5:00 PM</p>
+                        <p>Rajendra Naidu Block • Room RJ-101, 1st Floor. Confirm visiting hours at reception.</p>
                     </div>
                     <div className="p-3 bg-slate-900/80 rounded-2xl border border-slate-800 text-xs text-slate-300">
                         <h5 className="font-bold text-white">Accounts & Fee Counter</h5>
-                        <p>Administrative Tower, Ground Floor (Counter 03 & 04)</p>
+                        <p>Rajendra Naidu Block • Ask the reception desk for the current accounts counter.</p>
                     </div>
                     <div className="p-3 bg-slate-900/80 rounded-2xl border border-slate-800 text-xs text-slate-300">
                         <h5 className="font-bold text-white">Examination Cell</h5>
-                        <p>Administrative Tower, 2nd Floor • Hall Ticket & Transcript Inquiries</p>
+                        <p>For hall tickets and transcripts, ask at the administrative reception for the Examination Cell.</p>
                     </div>
                 </div>
 

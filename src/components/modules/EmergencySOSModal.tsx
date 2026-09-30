@@ -1,74 +1,10 @@
-import React from 'react';
-import { X, ShieldAlert, PhoneCall, HeartPulse, Flame, Siren, Navigation } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { X, ShieldAlert, PhoneCall, Navigation } from 'lucide-react';
 import { useNavigation } from '../../context/NavigationContext';
-
-export const EmergencySOSModal: React.FC<{ isOpen: boolean; onClose: () => void; onNavigateToMap: () => void }> = ({
-    isOpen,
-    onClose,
-    onNavigateToMap
-}) => {
-    const { setTargetDestination } = useNavigation();
-
-    if (!isOpen) return null;
-
-    const handleTriggerHealthCenterNav = () => {
-        setTargetDestination('b-health');
-        onClose();
-        onNavigateToMap();
-    };
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-fade-in select-none">
-            <div className="relative w-full max-w-xl p-8 border-2 border-rose-500/80 rounded-3xl bg-slate-950/95 shadow-2xl text-slate-100 glow-rose">
-                <button
-                    onClick={onClose}
-                    className="absolute top-5 right-5 p-2 text-slate-400 hover:text-white bg-slate-800 rounded-full transition-colors"
-                >
-                    <X className="w-6 h-6" />
-                </button>
-
-                <div className="flex items-center gap-3 text-rose-500 mb-2">
-                    <ShieldAlert className="w-10 h-10 animate-bounce" />
-                    <h3 className="text-3xl font-black uppercase tracking-tight text-white">EMERGENCY SOS ALERT</h3>
-                </div>
-                <p className="text-xs text-rose-300 font-semibold mb-6">
-                    Pressing any button below triggers immediate campus security dispatch & emergency alert.
-                </p>
-
-                {/* Emergency Hotline Buttons */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                    <div className="p-4 bg-rose-950/60 border border-rose-500/50 rounded-2xl flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <Siren className="w-8 h-8 text-rose-400" />
-                            <div>
-                                <h4 className="font-extrabold text-white text-sm">Campus Security</h4>
-                                <span className="text-xs text-rose-300 font-mono">+1 (555) 911-CAMPUS</span>
-                            </div>
-                        </div>
-                        <PhoneCall className="w-5 h-5 text-rose-400" />
-                    </div>
-
-                    <div className="p-4 bg-rose-950/60 border border-rose-500/50 rounded-2xl flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <HeartPulse className="w-8 h-8 text-rose-400" />
-                            <div>
-                                <h4 className="font-extrabold text-white text-sm">24/7 Ambulance</h4>
-                                <span className="text-xs text-rose-300 font-mono">+1 (555) 911-AMB</span>
-                            </div>
-                        </div>
-                        <PhoneCall className="w-5 h-5 text-rose-400" />
-                    </div>
-                </div>
-
-                {/* Direct Hospital Navigation */}
-                <button
-                    onClick={handleTriggerHealthCenterNav}
-                    className="w-full py-4 px-6 bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-extrabold rounded-2xl text-sm flex items-center justify-center gap-3 shadow-xl glow-rose transition-all"
-                >
-                    <Navigation className="w-5 h-5" />
-                    <span>Immediate Route to Campus Medical Center</span>
-                </button>
-            </div>
-        </div>
-    );
+export const EmergencySOSModal: React.FC<{ isOpen: boolean; onClose: () => void; onNavigateToMap: () => void }> = ({ isOpen, onClose, onNavigateToMap }) => {
+const { setTargetDestination } = useNavigation();
+const panel = useRef<HTMLDivElement>(null);
+useEffect(() => { if (!isOpen) return; const previous = document.activeElement as HTMLElement; panel.current?.focus(); const handler = (e: KeyboardEvent) => { if(e.key === 'Escape') onClose(); if(e.key === 'Tab') { const items = panel.current?.querySelectorAll<HTMLElement>('button,a[href]'); if(!items?.length) return; const first=items[0], last=items[items.length-1]; if(e.shiftKey && (document.activeElement === first || document.activeElement === panel.current)) { e.preventDefault(); last.focus(); } else if(!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } } }; window.addEventListener('keydown',handler); return () => { window.removeEventListener('keydown',handler); previous?.focus(); }; }, [isOpen,onClose]);
+if (!isOpen) return null;
+return <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"><div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="emergency-title" className="relative w-full max-w-lg p-7 border border-rose-800 rounded-2xl bg-[#192724] text-slate-100"><button aria-label="Close emergency information" onClick={onClose} className="absolute top-4 right-4 p-2 text-slate-400"><X size={21} /></button><ShieldAlert size={32} className="text-rose-300 mb-5" /><h2 id="emergency-title" className="text-2xl font-semibold">Emergency assistance</h2><p className="text-sm text-slate-300 mt-3 leading-relaxed">For urgent police, fire or medical assistance in India, dial 112 from your phone.</p><a href="tel:112" className="flex items-center justify-between bg-rose-900/40 border border-rose-700 rounded-xl p-5 mt-5"><span><strong className="block text-lg">112</strong><span className="text-xs text-rose-200">National emergency helpline</span></span><PhoneCall size={24} /></a><p className="text-xs text-slate-400 mt-4">The call link opens your device’s dialler. This app does not send a security alert or dispatch assistance. On a kiosk, use your phone or ask the main gate security desk for help.</p><button onClick={() => { setTargetDestination('b-health'); onClose(); onNavigateToMap(); }} className="primary-button mt-6 w-full justify-center"><Navigation size={16} />Find campus health centre</button><a className="block mt-4 text-xs text-slate-400 underline" href="https://112.gov.in/" target="_blank" rel="noreferrer">Emergency Response Support System · Government of India</a></div></div>;
 };

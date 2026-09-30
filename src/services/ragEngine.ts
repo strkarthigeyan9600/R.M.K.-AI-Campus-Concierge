@@ -13,6 +13,9 @@ export interface KnowledgeDocument {
 }
 
 export const KNOWLEDGE_CORPUS: KnowledgeDocument[] = [
+    ...HOSTELS.map(hostel => ({ id: `kb-menu-${hostel.id}`, title: `${hostel.name} mess menu`, category: 'Hostel & Dining', content: `${hostel.name}. Sample meal plan: ${hostel.messSchedule.map(day => `${day.day}: Breakfast — ${day.breakfast}; Lunch — ${day.lunch}; Snacks — ${day.snacks}; Dinner — ${day.dinner}`).join('. ')}. Confirm today's menu with the hostel office.`, keywords: ['mess menu', 'dinner', 'breakfast', 'lunch', 'hostel food'], navigationBuildingId: hostel.buildingId })),
+    ...BUS_ROUTES.map(bus => ({ id: `kb-${bus.id}`, title: bus.routeName, category: 'Transport', content: `Sample bus route ${bus.routeNumber}: ${bus.stops.map(stop => `${stop.name} at ${stop.time}`).join(' → ')}. Confirm current routes with the transport office.`, keywords: ['bus route', 'transport', ...bus.stops.map(stop => stop.name.toLowerCase().split(' ')[0])], navigationBuildingId: 'b-bus', navigationNodeId: 'n-bus-node' })),
+    { id: 'kb-admissions', title: 'Admissions and courses', category: 'Admissions', content: `Available sample programmes: ${ADMISSION_COURSES.map(course => `${course.degree} ${course.branch}`).join('; ')}. Visit the admissions desk at Rajendra Naidu Block for current eligibility, application procedures and fees.`, keywords: ['admission', 'admissions', 'courses', 'eligibility', 'application', 'fees'], navigationBuildingId: 'b-rj', navigationNodeId: 'n-rj-entrance' },
     // CSE Department & Faculty
     {
         id: 'kb-cse-dept',
@@ -108,7 +111,8 @@ export const KNOWLEDGE_CORPUS: KnowledgeDocument[] = [
 export class RAGEngine {
     public static query(userQuery: string, lang: LanguageCode = 'en'): ChatMessage {
         const qLower = userQuery.toLowerCase().trim();
-        const queryTokens = qLower.split(/\s+/).filter(t => t.length > 2);
+        const stopWords = new Set(['where', 'the', 'for', 'how', 'what', 'can', 'you', 'find', 'does', 'about', 'please', 'there', 'with']);
+        const queryTokens = qLower.replace(/[?.,!]/g, '').split(/\s+/).filter(t => t.length > 2 && !stopWords.has(t));
 
         const scoredDocs = KNOWLEDGE_CORPUS.map(doc => {
             let score = 0;
@@ -134,7 +138,7 @@ export class RAGEngine {
         }
 
         const topDoc = topMatches[0].doc;
-        const sources: GroundedSource[] = topMatches.map(m => ({
+        const sources: GroundedSource[] = topMatches.slice(0, 1).map(m => ({
             title: m.doc.title,
             category: m.doc.category,
             snippet: m.doc.content.slice(0, 140) + '...'
@@ -157,7 +161,7 @@ export class RAGEngine {
             navigationAction = {
                 toNodeId: topDoc.navigationNodeId,
                 toBuildingId: topDoc.navigationBuildingId,
-                label: `YES, NAVIGATE TO ${bldgName.toUpperCase()}`
+                label: `Directions to ${bldg?.shortName || bldgName}`
             };
         }
 
@@ -172,6 +176,6 @@ export class RAGEngine {
     }
 
     private static getFallbackText(query: string, lang: LanguageCode): string {
-        return `I searched R.M.K. Engineering College official knowledge base for "${query}". For instant campus navigation, try asking about the CSE Department, Central Library, Auditorium, AICTE IDEA Lab, Principal Office, Hostels, or Bus routes.`;
+        return `I couldn't find reliable information for "${query}" in this campus guide. Try the CSE Department, Central Library, Auditorium, admissions, hostel menus or bus routes. For information outside this guide, contact the college office.`;
     }
 }

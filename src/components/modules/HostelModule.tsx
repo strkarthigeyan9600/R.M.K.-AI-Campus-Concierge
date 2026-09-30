@@ -13,7 +13,7 @@ export const HostelModule: React.FC = () => {
             <div className="glass-panel border border-slate-700/80 rounded-3xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                        <BedDouble className="w-6 h-6 text-sky-400" />
+                        <BedDouble className="w-6 h-6 text-emerald-300" />
                         <span>Hostel Accommodation & Dining Mess</span>
                     </h3>
                     <p className="text-xs text-slate-400 mt-0.5">Mess daily menu, warden details, and residential guidelines</p>
@@ -24,12 +24,13 @@ export const HostelModule: React.FC = () => {
                         <button
                             key={h.id}
                             onClick={() => setSelectedHostelId(h.id)}
+                            aria-pressed={selectedHostelId === h.id}
                             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${selectedHostelId === h.id
-                                    ? 'bg-sky-600 text-white shadow-md glow-sky'
+                                    ? 'bg-[#009d80] text-white shadow-md '
                                     : 'text-slate-400 hover:text-slate-200'
                                 }`}
                         >
-                            {h.name} ({h.type})
+                            {h.type === 'Boys' ? 'Boys residence' : 'Girls residence'}
                         </button>
                     ))}
                 </div>
@@ -44,7 +45,7 @@ export const HostelModule: React.FC = () => {
                     <div className="p-3 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-1">
                         <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Hostel Warden</span>
                         <h5 className="text-sm font-bold text-white">{activeHostel.wardenName}</h5>
-                        <p className="text-xs text-sky-400 font-semibold">{activeHostel.wardenContact}</p>
+                        <p className="text-xs text-emerald-300 font-semibold">{activeHostel.wardenContact}</p>
                     </div>
 
                     <div>
@@ -64,7 +65,7 @@ export const HostelModule: React.FC = () => {
                 <div className="md:col-span-2 glass-panel border border-slate-700/80 rounded-3xl p-6">
                     <h4 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
                         <Utensils className="w-5 h-5 text-amber-400" />
-                        <span>Weekly Mess Menu & Timings</span>
+                        <span>Sample weekly dining menu</span>
                     </h4>
 
                     <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">

@@ -221,6 +221,26 @@ button{font:inherit;color:inherit;cursor:pointer}
   .calib{width:calc(100% - 28px)}
   .scalebar{display:none}
 }
+/* Campus companion map styling */
+:root { --forest:#303438; --green:#009d80; --sage:#409f82; --leaf:#e5f5ee; --paper:#f5faf7; --ink:#303438; --ink-soft:#567568; --line:#c5dfd2; --signal:#39d7b3; --turf:#c5e3d0; --turf-dk:#b0d5bc; --turf-lt:#d9eedf; --tree:#408d71; --tree-lt:#6eb092; --stone:#e6eee7; --plinth:#d7e2d9; --road:#ffffff; --road-edge:#b9cfc2; --walk:#f9fdf9; --walk-edge:#bdd3c4; --halo:#f5faf7; --rail:300px; --shadow:0 4px 18px #254f3618; }
+body { font-family:'Segoe UI',Arial,sans-serif; }
+.sign,.btn,.cat,.grouphead,.plabel text { font-family:'Segoe UI',Arial,sans-serif; text-transform:none; letter-spacing:0; }
+.topbar { background:#009d80; padding:15px 20px; }.topbar h1 { font-size:17px; font-weight:600; letter-spacing:0; }.topbar .where { color:#e0f7ee; letter-spacing:.3px; font-size:11px; }.crest { background:#ffffff24; color:white; border:1px solid #ffffff60; border-radius:8px; }
+.stage { background:radial-gradient(ellipse at center,#f5faf6,#e0eee5); }.stage:before { content:'↑ N'; position:absolute; top:18px; left:18px; z-index:2; background:#ffffffed; border:1px solid #c5dfd2; border-radius:8px; padding:9px 12px; font-size:12px; font-weight:700; color:#008c72; pointer-events:none; }
+.rail { background:white; }.trip { padding:18px 16px 14px; }.slot { border-radius:8px; padding:11px; }.slot .lab { font-size:9px; letter-spacing:1px; }.slot .val { font-size:13px; }.btn { font-size:11px; border-width:1px; border-radius:7px; }.hint { font-size:11px; line-height:1.6; }.search { font-size:12px; border-width:1px; }.cat { font-size:10px; padding:6px 9px; }.cat[aria-pressed=true] { background:#009d80; border-color:#009d80; }.grouphead { font-size:10px; letter-spacing:1px; color:#008c72; }.item { padding:11px 8px; border-radius:7px; }.item .nm { font-size:12px; }.item .sb { font-size:10px; }.item .code { background:#edf7f1; color:#008c72; }.item.isto { background:#e6f5ed; }.item.isto .code { color:white; background:#009d80; }
+.card { border-radius:12px; width:300px; }.card .head { background:#303438; padding:15px 18px; }.card .head .eyebrow { color:#6edec1; letter-spacing:1px; }.card .head .sub { color:#daeee5; }.card .head .big { font-size:25px; }.step .t { font-size:12px; }.step .ic { color:#009d80; background:#e6f5ed; }.step .d { font-size:10px; }.steps { max-height:180px; }.zoombar button { border-radius:8px; color:#008c72; box-shadow:0 3px 12px #254f3618; }
+.plabel.r1 text { fill:#284b3c; font-size:9px; letter-spacing:.2px; }.plabel.r2 text { fill:#466853; font-size:8px; }.plabel.onroof text { stroke:#fff; }.route-core { stroke:#009d80; stroke-width:5.2; }.route-case { stroke:#005848; }.route-flow { opacity:.8; }.pin.b path { fill:#303438; }.pin.b circle { fill:#39d7b3; }
+.map-legend { position:absolute; left:16px; bottom:55px; display:flex; flex-wrap:wrap; gap:12px; padding:10px 13px; border:1px solid #c5dfd2; border-radius:8px; background:#fffffff0; color:#527263; font-size:10px; pointer-events:none; }.map-legend span { display:flex; align-items:center; gap:5px; }.map-legend i { width:8px; height:8px; border-radius:2px; background:#009d80; }.map-legend .legend-route { width:16px; height:3px; }.map-legend .legend-building { background:#547d6a; }
+@media(max-width:1100px) and (min-width:881px) { .map-legend { bottom:14px; }.scalebar { display:none; } }
+@media(max-width:880px) { .topbar { padding:12px 15px; }.stage { min-height:320px; }.rail { max-height:42%; }.card { left:auto; width:260px; max-width:calc(100% - 24px); }.steps { max-height:92px; }.card .head { padding:10px 13px; }.card .head .big { font-size:20px; }.map-legend { left:10px; bottom:10px; gap:8px; font-size:9px; padding:8px; }.card.on ~ .map-legend { display:none; } }
+/* Route guidance lives beside the map, keeping every building visible. */
+:root { --rail:320px; }
+.rail { overflow-y:auto; }.card { position:static; width:auto; max-width:none; flex-shrink:0; margin:0 16px 12px; box-shadow:none; border-color:#b9dccc; }.card .head { background:#edf8f2; color:#234c3b; }.card .head .eyebrow { color:#008b70; font-size:11px; line-height:1.5; letter-spacing:0; }.card .head .big { color:#234c3b; font-size:23px; }.card .head .sub { color:#527565; }.steps { max-height:145px; }.card .foot { background:#fafdfb; }.list { min-height:150px; }.tripbtns { justify-content:flex-end; }.tripbtns .btn { flex:0 0 auto; padding:8px 15px; }#swapBtn,#gateBtn,#clrFrom { display:none; }.slot.from .val { color:#325b49; }.slot .val { display:block; }.hint { font-size:11px; }.map-legend { bottom:55px; }
+@media(max-width:880px) { .console { min-height:780px; }.body { overflow:auto; }.stage { flex:0 0 380px; min-height:380px; }.rail { flex:1 0 auto; max-height:none; overflow:visible; }.card { width:auto; max-width:none; margin:0 14px 14px; }.steps { max-height:140px; }.trip { padding:14px; }.list { max-height:220px; min-height:150px; }.map-legend { bottom:12px; }.card.on ~ .map-legend { display:flex; } }
+.rail.has-route .list,.rail.has-route .cats { display:none; }.rail.searching .list { display:block; }.rail.searching .cats { display:flex; }.rail.searching .card { display:none; }
+/* Professional wayfinding: neutral land, precise teal routes, readable signage. */
+:root { --turf:#e3ede7; --turf-dk:#d8e5dc; --turf-lt:#f0f5f1; --tree:#62957c; --tree-lt:#94b8a0; --road:#fff; --road-edge:#c4d3c9; --walk:#fff; --walk-edge:#c7d8cd; --stone:#edf1ee; --plinth:#d8e1dc; }
+.stage { background:#f5f8f6; }.topbar { background:#fff; color:#254a3a; border-bottom:1px solid #d2e4d9; }.topbar .where { color:#6b8274; }.crest { color:#009d80; background:#e6f5ed; border-color:#c5e4d5; }.topbar h1 { font-size:16px; }.rail { border-color:#d4e3d9; }.slot { background:white; border-width:1px; }.slot .lab { display:block; margin-bottom:5px; }.slot.from #fromVal { display:none; }#originSelect { width:100%; border:0; background:white; font:inherit; font-size:13px; color:#2b5340; padding:3px 0; cursor:pointer; }.card { border-radius:9px; }.card .head { background:#009d80; color:white; }.card .head .eyebrow,.card .head .big,.card .head .sub { color:white; }.card .head .eyebrow { opacity:.85; }.badge circle { stroke:#698577; stroke-width:1; }.badge text { font-size:7px; }.plabel text { font-family:'Segoe UI',Arial,sans-serif; letter-spacing:0; paint-order:stroke; stroke:#fffffff0; stroke-width:2.8px; stroke-linejoin:round; }.plabel.r1 text { font-size:9px; fill:#244939; letter-spacing:0; text-transform:none; }.plabel.r2 text { font-size:8px; fill:#446153; }.road-mid { opacity:.25; }.g-place.dim { opacity:.18; }.route-halo { stroke-width:11; }.route-core { stroke-width:4; }.route-flow { stroke-width:1.8; opacity:.65; }.map-legend { box-shadow:0 2px 8px #153f2610; }.pin path { filter:drop-shadow(0 2px 2px #17382735); }.steps { max-height:185px; }.step { padding:11px 10px; border-bottom:1px solid #edf3ef; border-radius:0; }
 </style>
 </head>
 <body>
@@ -276,7 +296,7 @@ button{font:inherit;color:inherit;cursor:pointer}
         <button id="zres" class="rs" aria-label="Reset view">FIT</button>
       </div>
 
-      <div class="scalebar"><span class="bar"></span><span class="mono" id="scaleTxt">50 m</span></div>
+      <div class="map-legend" aria-label="Map legend"><span><i class="legend-building"></i>Buildings</span><span><i></i>Start / destination</span><span><i class="legend-route"></i>Walking route</span></div><div class="scalebar"><span class="bar"></span><span class="mono" id="scaleTxt">50 m</span></div>
 
       <div class="calib" id="calibPanel">
         <h3 class="sign">Adjust map</h3>
@@ -372,10 +392,10 @@ const PLACES = [
 
 /* roof palette by category */
 const ROOF = {
-  Academic:{roof:"#C2634A",dk:"#9C4A33",hi:"#DE8A6E"},
-  Labs:    {roof:"#B75B48",dk:"#934434",hi:"#D6836C"},
-  Hostels: {roof:"#A9603F",dk:"#87492D",hi:"#C98A63"},
-  Dining:  {roof:"#CE7F45",dk:"#A66131",hi:"#E4A46F"},
+  Academic:{roof:"#4d9b82",dk:"#31765f",hi:"#8ccab3"},
+  Labs:    {roof:"#548f99",dk:"#386871",hi:"#91c5cb"},
+  Hostels: {roof:"#6c9275",dk:"#4d7054",hi:"#aec9ad"},
+  Dining:  {roof:"#b39c6f",dk:"#8c774e",hi:"#d8c69f"},
   Sports:  {roof:"#7C9C7A",dk:"#5E7C5C",hi:"#A2BE9E"},
   Utilities:{roof:"#8C9AA2",dk:"#6C7A82",hi:"#B3BEC4"},
   Access:  {roof:"#B9884A",dk:"#946A34",hi:"#D6AC77"}
@@ -1161,10 +1181,9 @@ var state={from:null,to:null,path:null,steps:null,calibrate:false,filter:"All",q
 function pick(id){
   var p=NODES[id];
   if(!p||p.junction) return;
-  if(!state.from) state.from=p;
-  else if(!state.to){ if(p===state.from) state.from=null; else state.to=p; }
-  else { state.from=p; state.to=null; }
+  state.to=p; state.q=''; document.getElementById('search').value='';
   route();
+  if(state.to && window.parent !== window) window.parent.postMessage({type:'campus-map-selection',from:state.from?.id,to:state.to.id},window.location.origin);
 }
 function route(){
   if(state.from&&state.to){
@@ -1175,9 +1194,11 @@ function route(){
 }
 
 function render(){
+  document.querySelector('.rail').classList.toggle('has-route',!!state.to);
+  document.querySelector('.rail').classList.toggle('searching',!!state.q);
   var fv=document.getElementById("fromVal"), tv=document.getElementById("toVal");
   fv.innerHTML=state.from?state.from.name:"Tap a building on the map";
-  fv.className="val"+(state.from?"":" empty");
+  fv.className="val"+(state.from?"":" empty"); if(document.getElementById("originSelect")) document.getElementById("originSelect").value=state.from?.id || "";
   tv.innerHTML=state.to?state.to.name:"Then tap where you're going";
   tv.className="val"+(state.to?"":" empty");
   document.getElementById("slotFrom").classList.toggle("armed",!state.from);
@@ -1186,7 +1207,7 @@ function render(){
   var h=document.getElementById("hintTxt");
   if(!state.from) h.innerHTML="Tap any building to set your <b>start</b>.";
   else if(!state.to) h.innerHTML="Now tap your <b>destination</b> — the route draws itself.";
-  else h.innerHTML="Tap anywhere else to start a <b>new route</b> from there.";
+  else h.innerHTML="Select another building to <b>change your destination</b>.";
 
   PLACES.forEach(function(p){
     if(!p.node) return;
@@ -1256,6 +1277,15 @@ function fmtT(s){ return Math.max(1,Math.round(s/60))+" min walk"; }
 
 function renderCard(){
   var card=document.getElementById("card");
+  if(state.from && state.to && state.from === state.to){
+    card.classList.add("on");
+    document.getElementById("cardEyebrow").textContent=state.to.name;
+    document.getElementById("distTxt").textContent="You’re already here";
+    document.getElementById("timeTxt").textContent="0 min walk";
+    document.getElementById("footNote").textContent="Choose a different destination to plan a walk.";
+    document.getElementById("steps").innerHTML="";
+    return;
+  }
   if(!state.steps){ card.classList.remove("on"); return; }
   card.classList.add("on");
   var total=0;
@@ -1263,7 +1293,7 @@ function renderCard(){
   var m=metres(total);
   document.getElementById("distTxt").textContent=fmtM(m);
   document.getElementById("timeTxt").textContent=fmtT(m/WALK_MPS);
-  document.getElementById("cardEyebrow").textContent=state.from.id+" → "+state.to.id;
+  document.getElementById("cardEyebrow").textContent=state.from.name+" → "+state.to.name;
   document.getElementById("footNote").textContent=
     state.steps.length+" steps · distances estimated from the printed campus map";
 
@@ -1391,14 +1421,14 @@ document.getElementById("zout").addEventListener("click",function(){ zoomAt({x:V
 document.getElementById("zres").addEventListener("click",function(){ VIEW=Object.assign({},HOME); applyView(); });
 
 document.getElementById("clrFrom").addEventListener("click",function(){ state.from=state.to; state.to=null; route(); });
-document.getElementById("clrTo").addEventListener("click",function(){ state.to=null; route(); });
+document.getElementById("clrTo").addEventListener("click",function(){ state.to=null; route(); window.parent.postMessage({type:'campus-map-selection',from:state.from?.id,to:null},window.location.origin); });
 document.getElementById("swapBtn").addEventListener("click",function(){
   var t=state.from; state.from=state.to; state.to=t; route();
 });
 document.getElementById("gateBtn").addEventListener("click",function(){
   state.from=NODES.MGT; if(state.to===NODES.MGT) state.to=null; route();
 });
-document.getElementById("resetBtn").addEventListener("click",function(){ state.from=null; state.to=null; route(); });
+document.getElementById("resetBtn").addEventListener("click",function(){ state.to=null; route(); window.parent.postMessage({type:'campus-map-selection',from:state.from?.id,to:null},window.location.origin); });
 document.getElementById("search").addEventListener("input",function(e){
   state.q=e.target.value.trim().toLowerCase(); render();
 });
@@ -1418,7 +1448,23 @@ document.getElementById("dumpBtn").addEventListener("click",function(){
 });
 window.addEventListener("resize",updateScale);
 
-buildGraph(); drawBase(); renderCats(); render();
+document.querySelector('.rail').insertBefore(document.querySelector('.finder'),document.querySelector('.hint'));
+document.querySelector('.rail').insertBefore(document.getElementById('card'),document.getElementById('list'));
+buildGraph(); state.from=NODES.MGT; drawBase(); renderCats(); render();
+const originSelect=document.createElement('select');
+originSelect.id='originSelect'; originSelect.setAttribute('aria-label','Select route starting point');
+const originIds=['MGT','TMP','RJB','NWB','SNB','SVB','LKB','SSB','PVB','VRB','BH1','GH4','MES','PLG','PRK','STP'];
+PLACES.filter(p=>originIds.includes(p.id)).forEach(p=>{ const option=document.createElement('option'); option.value=p.id; option.textContent=p.name; originSelect.appendChild(option); });
+document.getElementById('fromVal').after(originSelect);
+originSelect.value='MGT';
+originSelect.addEventListener('change',function(){ state.from=NODES[this.value]; route(); window.parent.postMessage({type:'campus-map-selection',from:state.from.id,to:state.to?.id || null},window.location.origin); });
+document.getElementById('calibBtn').style.display='none';
+window.addEventListener('message',function(event){
+  if(event.origin!==window.location.origin || event.source!==window.parent || !event.data || event.data.type!=='campus-destination') return;
+  state.from=NODES[event.data.from] || null;
+  state.to=NODES[event.data.to] || null;
+  route();
+});
 </script>
 </body>
 </html>

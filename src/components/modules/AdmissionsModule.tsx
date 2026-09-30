@@ -23,6 +23,7 @@ export const AdmissionsModule: React.FC = () => {
 
                 {/* Course Selector */}
                 <select
+                    aria-label="Choose a degree programme"
                     value={selectedCourseId}
                     onChange={e => setSelectedCourseId(e.target.value)}
                     className="px-4 py-2.5 bg-[#02130c] border border-emerald-800 rounded-2xl text-xs text-white focus:outline-none focus:border-amber-400 font-bold cursor-pointer"

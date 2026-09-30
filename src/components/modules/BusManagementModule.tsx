@@ -10,7 +10,7 @@ export const BusManagementModule: React.FC = () => {
                     <Bus className="w-6 h-6 text-amber-400" />
                     <span>Campus Bus Shuttle Service</span>
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">Real-time bus tracking, stop schedules, and driver contact info</p>
+                <p className="text-xs text-slate-400 mt-0.5">Sample route schedules. Confirm current stops and timings with the college transport office.</p>
             </div>
 
             <div className="space-y-6">
@@ -29,11 +29,11 @@ export const BusManagementModule: React.FC = () => {
 
                             <div className="flex items-center gap-4">
                                 <div className="text-right">
-                                    <span className="text-xs text-slate-400 block">Next Arrival</span>
-                                    <span className="text-lg font-extrabold text-amber-400">{bus.nextArrivalMinutes} Mins</span>
+                                    <span className="text-xs text-slate-400 block">Campus arrival</span>
+                                    <span className="text-lg font-extrabold text-amber-400">{bus.stops[bus.stops.length - 1].time}</span>
                                 </div>
                                 <span className="px-3 py-1.5 bg-emerald-500/20 text-emerald-300 font-bold text-xs rounded-xl border border-emerald-500/30">
-                                    {bus.status}
+                                    Sample schedule
                                 </span>
                             </div>
                         </div>

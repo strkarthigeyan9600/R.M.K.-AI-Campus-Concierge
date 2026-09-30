@@ -7,6 +7,7 @@ interface NavigationContextType {
     selectedBuilding: Building;
     selectedFloor: number;
     startNodeId: string;
+    setStartLocation: (buildingId: string) => void;
     targetNodeId: string | null;
     activeRoute: NavigationRoute | null;
     accessibleOnly: boolean;
@@ -25,13 +26,21 @@ const NavigationContext = createContext<NavigationContextType | undefined>(undef
 export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [selectedBuilding, setSelectedBuilding] = useState<Building>(BUILDINGS[0]);
     const [selectedFloor, setSelectedFloor] = useState<number>(0);
-    const [startNodeId] = useState<string>('n-kiosk-start');
-    const [targetNodeId, setTargetNodeId] = useState<string | null>(null);
+    const [startNodeId, setStartNodeId] = useState<string>(() => { const from = new URLSearchParams(window.location.search).get('from'); return MAP_NODES.some(n => n.id === from) ? from! : 'n-gate-kiosk'; });
+    const setStartLocation = (buildingId: string) => { const node = MAP_NODES.find(n => n.buildingId === buildingId); if (node) setStartNodeId(node.id); };
+    const [targetNodeId, setTargetNodeId] = useState<string | null>(() => {
+        const target = new URLSearchParams(window.location.search).get('to');
+        return MAP_NODES.some(n => n.id === target) ? target : null;
+    });
     const [activeRoute, setActiveRoute] = useState<NavigationRoute | null>(null);
     const [accessibleOnly, setAccessibleOnly] = useState<boolean>(false);
     const [isQRModalOpen, setQRModalOpen] = useState<boolean>(false);
 
     // Recalculate route whenever targetNodeId or accessibleOnly changes
+    useEffect(() => {
+        const node = MAP_NODES.find(n => n.id === targetNodeId);
+        if (node) { const building = BUILDINGS.find(b => b.id === node.buildingId); if (building) setSelectedBuilding(building); setSelectedFloor(node.floorNumber); }
+    }, [targetNodeId]);
     useEffect(() => {
         if (targetNodeId) {
             const route = NavigationGraphService.findRoute(startNodeId, targetNodeId, accessibleOnly);
@@ -80,6 +89,7 @@ export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                 selectedBuilding,
                 selectedFloor,
                 startNodeId,
+                setStartLocation,
                 targetNodeId,
                 activeRoute,
                 accessibleOnly,

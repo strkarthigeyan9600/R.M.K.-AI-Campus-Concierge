@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useVoice } from '../../context/VoiceContext';
 import { useNavigation } from '../../context/NavigationContext';
@@ -21,7 +21,7 @@ const QUICK_PROMPTS = [
 
 export const AIChatKiosk: React.FC<{ onNavigateToMap?: () => void }> = ({ onNavigateToMap }) => {
     const { currentLanguage, t } = useLanguage();
-    const { isListening, isSpeaking, startListening, stopListening, speak, stopSpeaking } = useVoice();
+    const { isListening, isSpeaking, voiceError, startListening, stopListening, speak, stopSpeaking } = useVoice();
     const { setTargetDestination } = useNavigation();
 
     const [messages, setMessages] = useState<ChatMessage[]>([
@@ -31,12 +31,25 @@ export const AIChatKiosk: React.FC<{ onNavigateToMap?: () => void }> = ({ onNavi
             text: 'Welcome to R.M.K. Engineering College! I am your RMK AI Campus Concierge. Ask me about departments, faculty cabins, Central Library, AICTE IDEA Lab, bus routes, hostel mess menus, or request turn-by-turn walking directions.',
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             sources: [
-                { title: 'RMKEC Campus Guide 2026', category: 'Official Knowledge Base', snippet: 'Grounded RAG Smart Campus Assistant for RMK Engineering College' }
+                { title: 'RMK Campus Guide', category: 'Campus records', snippet: 'Information from the supplied campus guide. Confirm current details with the college office.' }
             ]
         }
     ]);
 
-    const [inputQuery, setInputQuery] = useState('');
+    const [inputQuery, setInputQuery] = useState(() => sessionStorage.getItem('campus-prompt') || '');
+    const messageBody = useRef<HTMLDivElement>(null);
+    const pendingReplies = useRef<ReturnType<typeof setTimeout>[]>([]);
+    const voiceCleanup = useRef({ stopListening, stopSpeaking });
+    voiceCleanup.current = { stopListening, stopSpeaking };
+    useEffect(() => () => {
+        pendingReplies.current.forEach(clearTimeout);
+        voiceCleanup.current.stopListening();
+        voiceCleanup.current.stopSpeaking();
+    }, []);
+    useEffect(() => {
+        messageBody.current?.scrollTo({ top: messageBody.current.scrollHeight, behavior: 'smooth' });
+    }, [messages]);
+    useEffect(() => { sessionStorage.removeItem('campus-prompt'); }, []);
 
     const handleSendMessage = (textToSend?: string) => {
         const query = textToSend || inputQuery;
@@ -52,11 +65,12 @@ export const AIChatKiosk: React.FC<{ onNavigateToMap?: () => void }> = ({ onNavi
         setMessages(prev => [...prev, userMsg]);
         if (!textToSend) setInputQuery('');
 
-        setTimeout(() => {
+        const reply = setTimeout(() => {
             const aiResponse = RAGEngine.query(query, currentLanguage);
             setMessages(prev => [...prev, aiResponse]);
             speak(aiResponse.text.slice(0, 150));
         }, 300);
+        pendingReplies.current.push(reply);
     };
 
     const handleVoiceToggle = () => {
@@ -86,7 +100,7 @@ export const AIChatKiosk: React.FC<{ onNavigateToMap?: () => void }> = ({ onNavi
                         <div className="flex items-center gap-2">
                             <h3 className="text-lg font-extrabold text-white tracking-tight">Ask RMK AI Concierge</h3>
                             <span className="px-2.5 py-0.5 text-[10px] font-extrabold bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/40 flex items-center gap-1">
-                                <Sparkles className="w-3 h-3 text-amber-400" /> Grounded RAG
+                                <Sparkles className="w-3 h-3 text-amber-400" /> Campus guide
                             </span>
                         </div>
                         <p className="text-xs text-emerald-200/70 font-medium">Smart Voice & Natural Language Campus Assistant • R.M.K. Engineering College</p>
@@ -109,7 +123,8 @@ export const AIChatKiosk: React.FC<{ onNavigateToMap?: () => void }> = ({ onNavi
             </div>
 
             {/* Chat Messages Body */}
-            <div className="flex-1 overflow-y-auto my-4 pr-2 space-y-4 scrollbar-thin">
+            {voiceError && <p role="status" className="text-xs text-amber-200 mt-3">{voiceError}</p>}
+            <div ref={messageBody} role="log" aria-label="Campus assistant conversation" aria-live="polite" className="flex-1 overflow-y-auto my-4 pr-2 space-y-4 scrollbar-thin">
                 {messages.map(msg => (
                     <div
                         key={msg.id}
@@ -226,6 +241,7 @@ export const AIChatKiosk: React.FC<{ onNavigateToMap?: () => void }> = ({ onNavi
                 </button>
 
                 <input
+                    aria-label="Ask the campus assistant"
                     type="text"
                     value={inputQuery}
                     onChange={e => setInputQuery(e.target.value)}
@@ -236,6 +252,7 @@ export const AIChatKiosk: React.FC<{ onNavigateToMap?: () => void }> = ({ onNavi
 
                 <button
                     onClick={() => handleSendMessage()}
+                    aria-label="Send question"
                     className="p-3.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white rounded-2xl border border-emerald-400/40 shadow-lg shadow-emerald-950 transition-all active:scale-95"
                 >
                     <Send className="w-5 h-5" />

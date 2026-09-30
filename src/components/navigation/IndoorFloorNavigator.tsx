@@ -38,7 +38,7 @@ export const IndoorFloorNavigator: React.FC = () => {
                             <Layers className="w-5 h-5" />
                         </div>
                         <div>
-                            <h3 className="text-lg font-extrabold text-white">{selectedBuilding.name} Indoor Layout</h3>
+                            <h3 className="text-lg font-extrabold text-white">{selectedBuilding.name} Destination Guide</h3>
                             <p className="text-xs text-emerald-300/70">Code: {selectedBuilding.code} | Total Floors: {selectedBuilding.floorCount}</p>
                         </div>
                     </div>
@@ -67,6 +67,7 @@ export const IndoorFloorNavigator: React.FC = () => {
 
                     {/* Indoor Nodes Layout */}
                     <div className="relative w-full h-full flex items-center justify-center">
+                        {floorNodes.length === 0 && <p className="text-sm text-slate-400 text-center max-w-sm">Room information for this floor is not available yet. Search a destination or ask at the department office.</p>}
                         {floorNodes.map(node => {
                             const isStart = activeRoute?.fromNodeId === node.id;
                             const isTarget = activeRoute?.toNodeId === node.id;
@@ -75,6 +76,10 @@ export const IndoorFloorNavigator: React.FC = () => {
                             return (
                                 <div
                                     key={node.id}
+                                    role="button"
+                                    tabIndex={0}
+                                    aria-label={`Navigate to ${node.name}`}
+                                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); calculateRoute(node.id); } }}
                                     onClick={() => calculateRoute(node.id)}
                                     className={`absolute p-3 rounded-2xl border transition-all cursor-pointer shadow-lg flex flex-col items-center justify-center group ${isTarget
                                             ? 'bg-emerald-600/90 text-white border-emerald-300 scale-110 z-20'
@@ -111,6 +116,7 @@ export const IndoorFloorNavigator: React.FC = () => {
                     <div className="relative mb-6">
                         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
                         <input
+                            aria-label="Search rooms and destinations"
                             type="text"
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
@@ -126,11 +132,16 @@ export const IndoorFloorNavigator: React.FC = () => {
 
                     {/* Room List Scroll */}
                     <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
+                        {filteredNodes.length === 0 && <p role="status" className="text-xs text-slate-400 py-4">No matching destinations. Try a different search or floor.</p>}
                         {filteredNodes.map(node => {
                             const isSelected = activeRoute?.toNodeId === node.id;
                             return (
                                 <div
                                     key={node.id}
+                                    role="button"
+                                    tabIndex={0}
+                                    aria-label={`Navigate to ${node.name}`}
+                                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); calculateRoute(node.id); } }}
                                     onClick={() => calculateRoute(node.id)}
                                     className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${isSelected
                                             ? 'bg-emerald-600/30 border-emerald-400 text-emerald-200'

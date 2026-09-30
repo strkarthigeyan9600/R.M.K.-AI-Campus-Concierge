@@ -1,59 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CAMPUS_EVENTS } from '../../data/mockData';
-import { Calendar, Trophy, Briefcase, MapPin, User, CheckCircle2 } from 'lucide-react';
-
-export const EventsModule: React.FC = () => {
-    return (
-        <div className="space-y-6 select-none">
-            <div className="glass-panel border border-slate-700/80 rounded-3xl p-6">
-                <h3 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                    <Calendar className="w-6 h-6 text-purple-400" />
-                    <span>Campus Events & Hackathons Calendar</span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-0.5">Seminars, workshops, placement drives, and cultural festivals</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {CAMPUS_EVENTS.map(evt => (
-                    <div key={evt.id} className="glass-panel border border-slate-700/80 rounded-3xl p-6 flex flex-col justify-between glass-card-hover">
-                        <div>
-                            <div className="flex items-center justify-between">
-                                <span className="px-3 py-1 bg-purple-500/20 text-purple-300 font-bold rounded-xl border border-purple-500/30 text-xs">
-                                    {evt.category}
-                                </span>
-                                <span className="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px] font-bold">
-                                    Registration: {evt.registrationStatus}
-                                </span>
-                            </div>
-
-                            <h4 className="text-lg font-bold text-white mt-3">{evt.title}</h4>
-                            <p className="text-xs text-slate-300 mt-2 leading-relaxed">{evt.description}</p>
-
-                            <div className="mt-4 space-y-2 text-xs text-slate-300">
-                                <div className="flex items-center gap-2 p-2 bg-slate-900/80 rounded-xl border border-slate-800">
-                                    <Calendar className="w-4 h-4 text-sky-400 shrink-0" />
-                                    <span>{evt.date}</span>
-                                </div>
-                                <div className="flex items-center gap-2 p-2 bg-slate-900/80 rounded-xl border border-slate-800">
-                                    <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
-                                    <span>{evt.location}</span>
-                                </div>
-                                {evt.speaker && (
-                                    <div className="flex items-center gap-2 p-2 bg-slate-900/80 rounded-xl border border-slate-800">
-                                        <User className="w-4 h-4 text-amber-400 shrink-0" />
-                                        <span>Keynote Speaker: {evt.speaker}</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        <button className="mt-6 w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all">
-                            <CheckCircle2 className="w-4 h-4" />
-                            <span>Add to Schedule / Register</span>
-                        </button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+import { CalendarDays, MapPin, Clock, Download, ArrowUpRight } from 'lucide-react';
+import { useNavigation } from '../../context/NavigationContext';
+import { CampusEvent } from '../../types';
+const escapeCalendar = (text: string) => text.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+export const EventsModule: React.FC<{ onNavigateToMap?: () => void }> = ({ onNavigateToMap }) => {
+const [filter, setFilter] = useState('Upcoming');
+const { setTargetDestination } = useNavigation();
+const [notice, setNotice] = useState('');
+const today = new Date().setHours(0, 0, 0, 0);
+const events = CAMPUS_EVENTS.filter(e => filter === 'All events' || (filter === 'Upcoming' ? new Date(e.date).getTime() >= today : new Date(e.date).getTime() < today));
+const downloadEvent = (event: CampusEvent) => {
+const date = new Date(event.date); const day = `${date.getFullYear()}${String(date.getMonth()+1).padStart(2,'0')}${String(date.getDate()).padStart(2,'0')}`;
+const end = new Date(date); end.setDate(end.getDate()+1); const endDay = `${end.getFullYear()}${String(end.getMonth()+1).padStart(2,'0')}${String(end.getDate()).padStart(2,'0')}`;
+const file = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RMK Campus//Campus Events//EN','BEGIN:VEVENT',`UID:${event.id}@rmk-campus.local`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}`,`DTSTART;VALUE=DATE:${day}`,`DTEND;VALUE=DATE:${endDay}`,`SUMMARY:${escapeCalendar(event.title)}`,`LOCATION:${escapeCalendar(event.location)}`,`DESCRIPTION:${escapeCalendar(event.description + '\nTime: ' + event.time + '\nConfirm availability with the organiser: ' + event.organizer)}`,'END:VEVENT','END:VCALENDAR'].join('\r\n');
+const url = URL.createObjectURL(new Blob([file], { type:'text/calendar;charset=utf-8' })); const link = document.createElement('a'); link.href=url; link.download=`${event.id}.ics`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); setNotice('Calendar file downloaded. Open it in your calendar app.');
+};
+return <div className="space-y-6"><div className="flex flex-wrap gap-2">{['Upcoming','Past events','All events'].map(tab => <button key={tab} onClick={() => setFilter(tab)} className={`px-4 py-2 rounded-xl text-xs border ${filter === tab ? 'bg-emerald-900 border-emerald-600 text-emerald-100' : 'border-slate-700 text-slate-400'}`}>{tab}</button>)}</div><p className="text-xs text-slate-400">Sample campus calendar. Confirm event dates and registration with the organiser.</p>{notice && <p role="status" className="text-xs text-emerald-200">{notice}</p>}<div className="grid grid-cols-1 md:grid-cols-2 gap-6">{events.map(event => <article key={event.id} className="glass-panel rounded-3xl p-6 flex flex-col"><div className="flex justify-between items-center"><span className="text-xs text-emerald-300">{event.category}</span><span className="text-xs text-slate-400">{new Date(event.date).getTime() < today ? 'Past event' : 'Upcoming'}</span></div><h2 className="text-lg font-semibold mt-4">{event.title}</h2><p className="text-xs text-slate-300 mt-3 leading-relaxed">{event.description}</p><div className="space-y-3 text-xs text-slate-300 my-6"><p className="flex gap-2"><CalendarDays size={16} />{event.date}</p><p className="flex gap-2"><Clock size={16} />{event.time}</p><p className="flex gap-2"><MapPin size={16} />{event.location}</p><p className="text-slate-400">Organised by {event.organizer}</p></div><div className="flex gap-3 mt-auto"><button onClick={() => downloadEvent(event)} className="primary-button"><Download size={15} /> Add to calendar</button><button className="subtle-button" onClick={() => { setTargetDestination(event.buildingId); onNavigateToMap?.(); }}>Find venue<ArrowUpRight size={15} /></button></div></article>)}</div>{!events.length && <div className="glass-panel p-8 rounded-xl text-center text-slate-400">No events in this view. Check all events for the full calendar.</div>}</div>;
 };

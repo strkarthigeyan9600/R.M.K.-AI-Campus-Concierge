@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 interface VoiceContextType {
     isListening: boolean;
     isSpeaking: boolean;
     transcript: string;
     audioLevel: number;
+    voiceError: string;
     startListening: (onResult?: (text: string) => void) => void;
     stopListening: () => void;
     speak: (text: string) => void;
@@ -18,6 +19,9 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [transcript, setTranscript] = useState('');
     const [audioLevel, setAudioLevel] = useState(0);
+    const [voiceError, setVoiceError] = useState('');
+    const recognitionRef = useRef<any>(null);
+    useEffect(() => () => { recognitionRef.current?.abort(); window.speechSynthesis?.cancel(); }, []);
 
     // Audio wave level simulation for listening & speaking visualizer
     useEffect(() => {
@@ -33,6 +37,8 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, [isListening, isSpeaking]);
 
     const startListening = (onResult?: (text: string) => void) => {
+        if (recognitionRef.current) return;
+        setVoiceError('');
         setIsListening(true);
         setTranscript('');
 
@@ -40,6 +46,8 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
             const recognition = new SpeechRecognition();
+            recognitionRef.current = recognition;
+            recognition.lang = 'en-IN';
             recognition.continuous = false;
             recognition.interimResults = true;
 
@@ -55,26 +63,25 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             };
 
             recognition.onerror = () => {
+                setVoiceError('Voice input could not start. Check microphone permissions or type your question.');
                 setIsListening(false);
             };
 
             recognition.onend = () => {
+                recognitionRef.current = null;
                 setIsListening(false);
             };
 
-            recognition.start();
+            try { recognition.start(); } catch { recognitionRef.current = null; setIsListening(false); setVoiceError('Voice input is unavailable. Please type your question.'); }
         } else {
-            // Fallback simulation for browsers without Web Speech API
-            setTimeout(() => {
-                const simulatedText = "Where is Dr. Alan Turing cabin?";
-                setTranscript(simulatedText);
-                if (onResult) onResult(simulatedText);
-                setIsListening(false);
-            }, 3000);
+            setIsListening(false);
+            setVoiceError('This browser does not support voice input. Please type your question.');
         }
     };
 
     const stopListening = () => {
+        recognitionRef.current?.abort();
+        recognitionRef.current = null;
         setIsListening(false);
     };
 
@@ -90,9 +97,6 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             utterance.onerror = () => setIsSpeaking(false);
 
             window.speechSynthesis.speak(utterance);
-        } else {
-            setIsSpeaking(true);
-            setTimeout(() => setIsSpeaking(false), 4000);
         }
     };
 
@@ -110,6 +114,7 @@ export const VoiceProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 isSpeaking,
                 transcript,
                 audioLevel,
+                voiceError,
                 startListening,
                 stopListening,
                 speak,

@@ -36,7 +36,7 @@ export class NavigationGraphService {
             let smallestDist = Infinity;
 
             unvisited.forEach(id => {
-                const d = distances.get(id) || Infinity;
+                const d = distances.get(id) ?? Infinity;
                 if (d < smallestDist) {
                     smallestDist = d;
                     currentId = id;
@@ -68,7 +68,7 @@ export class NavigationGraphService {
                 }
 
                 const alt = (distances.get(currentId!) || 0) + edgeWeight;
-                if (alt < (distances.get(neighborId) || Infinity)) {
+                if (alt < (distances.get(neighborId) ?? Infinity)) {
                     distances.set(neighborId, alt);
                     previous.set(neighborId, currentId);
                 }
@@ -93,9 +93,7 @@ export class NavigationGraphService {
             const dy = path[i].y - path[i + 1].y;
             totalMeters += Math.round(Math.sqrt(dx * dx + dy * dy) * 5);
         }
-        if (totalMeters === 0) totalMeters = 25;
-
-        const estimatedWalkingMinutes = Math.max(1, Math.ceil(totalMeters / 70)); // ~70m per min
+        const estimatedWalkingMinutes = Math.ceil(totalMeters / 70); // ~70m per min
 
         // Generate step instructions
         const steps = path.map((node, idx) => {
@@ -107,7 +105,7 @@ export class NavigationGraphService {
 
             return {
                 instruction,
-                distanceMeters: Math.round(totalMeters / (path.length - 1 || 1)),
+                distanceMeters: idx === 0 ? 0 : Math.round(Math.hypot(node.x - path[idx - 1].x, node.y - path[idx - 1].y) * 5),
                 nodeId: node.id,
                 floorNumber: node.floorNumber
             };

@@ -1,77 +1,46 @@
-# Smart AI Campus Concierge & Kiosk Navigation System
+# RMK Campus — College Navigation Companion
 
-An enterprise-grade, kiosk-optimized, interactive AI-powered Campus Concierge System designed for Freshers, Parents, Visitors, Alumni, Faculty, and Staff.
+A responsive campus visitor interface built with React, TypeScript and Vite. The main dashboard brings together campus search, illustrated walking routes, a campus knowledge assistant, faculty directory, transport schedules, hostel information, admissions, events, visitor guidance and an About page.
 
-Built with Apple / Tesla / Stripe-level aesthetics, full 2D visual campus map, indoor floor plan navigation with A* pathfinding, grounded RAG AI Knowledge Assistant, Web Speech API voice interaction (STT/TTS), QR mobile hand-off, bus & hostel management, admissions guide, analytics, and admin control panel.
+## Run locally
 
----
-
-## 🌟 Key Features
-
-- **Interactive 2D/3D Campus & Indoor Navigation**:
-  - Interactive SVG campus visual layout with building pins, animated path drawing, radar rings, and zoom/pan controls.
-  - Indoor floor plan navigator (Ground Floor, 1st Floor, 2nd Floor) with room finder and turn-by-turn guidance drawer.
-  - Wheelchair & Elevator accessibility toggle (skips staircases for accessibility compliance).
-- **RAG AI Assistant**:
-  - Natural language Q&A backed by structured campus knowledge base documents with source citation badges.
-  - Context-aware responses with zero hallucinations.
-  - Direct "Navigate Here" action triggers embedded inside AI chat messages.
-- **Voice Interaction & Multilingual Support**:
-  - Web Speech API integration for Speech-to-Text (STT) voice queries and Text-to-Speech (TTS) spoken answers.
-  - Dynamic audio frequency wave visualizer.
-  - Support for 10 languages (English, Hindi, Spanish, French, German, Japanese, Chinese, Marathi, Tamil, Telugu).
-- **Mobile QR Code Continuation**:
-  - QR Code generator allows kiosk users to transfer active walking navigation routes directly to their smartphone camera.
-- **Campus Information Modules**:
-  - **Home**: Live announcements, digital clock, weather widget, campus stats.
-  - **Faculty Directory**: Filter by department, search cabins, view office hours, and trigger map navigation to professor cabins.
-  - **Bus Shuttle Management**: Real-time arrival timers, stop schedules, driver contact details.
-  - **Hostel & Dining**: Warden contacts, residential guidelines, and daily mess menus (breakfast, lunch, snacks, dinner).
-  - **Admissions & Fee Calculator**: Interactive fee estimator, eligibility criteria, and required documents checklist.
-  - **Campus Events**: Seminars, hackathons, placement drives, workshops.
-  - **Student & Parent Guide**: Key administrative offices, principal cell, accounts, exam branch, and counseling services.
-  - **Emergency SOS Alert**: Immediate hotline modal with one-touch ambulance, security dispatch, and medical center pathfinding.
-- **Admin & Analytics Dashboards**:
-  - **Kiosk Analytics**: Total visitors, session duration, top searched building heatmaps, language usage breakdown.
-  - **Admin Control Panel**: Full CRUD management for buildings, faculty, events, and RAG knowledge articles.
-
----
-
-## 🛠️ Architecture & Tech Stack
-
-- **Frontend**: React 18, TypeScript, TailwindCSS (Glassmorphic dark mode), Framer Motion, Lucide Icons, QR Code SVG.
-- **Backend API**: Node.js, Express REST API (`/api/v1/...`).
-- **AI & Algorithms**: Custom TF-IDF Grounded RAG Search Engine, Dijkstra / A* Graph Pathfinding Algorithm.
-
----
-
-## 🚀 Getting Started
-
-### 1. Install Dependencies
-```bash
+```sh
 npm install
+npm run dev:frontend -- --host 0.0.0.0
 ```
 
-### 2. Run Development Server (Frontend + Backend REST API)
-```bash
-npm run dev
-```
-- Kiosk Web App: `http://localhost:3000`
-- Express REST API: `http://localhost:5000/api/v1`
+Open http://localhost:3000. The interface runs without the optional Express server. For the existing API scaffold, use `npm run dev` to launch both servers.
 
-### 3. Run Automated Tests
-```bash
+```sh
 npm test
-```
-
-### 4. Build Production Bundle
-```bash
 npm run build
+npm run preview -- --host 0.0.0.0
 ```
 
----
+## Completed interface flows
 
-## 🔒 Admin Credentials (Demo)
+- Destination search matches building names, departments and facilities.
+- Campus shortcuts and assistant navigation open the campus map and synchronise supported destinations with the illustrated map.
+- Routes start at the actual main gate; all graph destinations have automated reachability checks. The routing service retains accessible graph filtering, but the illustrated map requires campus verification of accessible paths.
+- A destination selector covers all buildings. Destinations absent from the illustration display a concise location summary. Walking directions sit beside the map and never cover buildings. Start and destination are both selectable, can be swapped, and stay synchronised between the route toolbar and map. QR handoff preserves both endpoints through `?from=NODE_ID&to=NODE_ID`.
+- QR codes use the actual application address and preserve the destination through `?to=NODE_ID`. A phone must be able to reach that address; localhost QR codes cannot open a different computer's localhost.
+- Events have upcoming/past filters, venue directions and downloadable `.ics` calendar files. Calendar entries include the listed time in the description, and are saved as all-day events.
+- Faculty department filters are derived from the actual records. Generic stock portraits have been replaced with initials.
+- Transport explicitly shows sample schedules, without pretending to be GPS tracking.
+- Voice uses browser speech recognition when available, reports unsupported/permission failures, and stops actual recognition when cancelled.
+- Administration provides searchable data review and JSON export for the college handover. It is a public local review screen, not a protected production CMS.
+- Emergency information offers a phone dialler link to India's 112 helpline and directions to the health centre. It does not claim to dispatch security. Source: https://112.gov.in/.
 
-- **Username**: `admin`
-- **Password**: `admin123`
+## Before the college's public launch
+
+This is a completed presentation interface, not an integrated college operations system. Existing records and photos were supplied in the project and have not been authenticated with the college.
+
+1. Have the college approve building positions, facilities, faculty records, office hours, hostel policies, admissions information, contacts and event dates in `src/data/mockData.ts` and `src/services/ragEngine.ts`.
+2. Replace supplied imagery with approved college photographs. The illustrated map and graph contain different schematic layouts; distances are estimates. Verify physical accessibility before offering accessible directions to visitors. The incomplete indoor schematic has been removed from the interface.
+3. Host the built `dist` directory on an HTTPS college domain. This makes mobile QR handoff and supported microphone access practical. The host should serve `index.html` for the application root, including query strings, and include `/assets/` and `/rmk_campus_router.html`.
+4. If the college needs secure administration, real-time buses, event registration, operational analytics or data editing, implement authenticated backend services and connect them to the interface. The existing Express scaffold is not a production authentication or tracking service.
+5. The assistant retrieves matching campus records locally. It is not connected to a hosted language model, and selecting a language does not fully translate the campus dataset.
+
+## Validation
+
+`npm test` covers campus knowledge retrieval, accessible routes, invalid destinations and main-gate reachability for every graph node. `npm run build` runs TypeScript checks and creates the production bundle. Desktop and mobile layouts, search-to-map navigation, assistant prompts, events, administration and QR route loading are also checked in the browser.
